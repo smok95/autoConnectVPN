@@ -13,7 +13,13 @@
     [options]
     ; Program will exit after n seconds
     ; Number of seconds before program exits
-    exit_after_seconds=15  
+    ; Default is 0 seconds (program will not exit)
+    exit_after_seconds=0
+
+    ; Disconnect existing VPN connection before connecting
+    ; Set to 1 to enable, 0 to disable
+    ; Default is 1
+    disconnect_before_connect=1
     ```
     
 2. Run the `autoConnectVPN.exe` program.

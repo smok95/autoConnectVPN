@@ -27,7 +27,12 @@ func main() {
 	section = cfg.Section("options")
 	exitAfterSeconds, err := section.Key("exit_after_seconds").Uint()
 	if err != nil {
-		exitAfterSeconds = 15
+		exitAfterSeconds = 0
+	}
+
+	disconnectBeforeConnect, err := section.Key("disconnect_before_connect").Uint()
+	if err != nil {
+		disconnectBeforeConnect = 1
 	}
 
 	// ProgramFiles(x86) 환경 변수 값 가져오기
@@ -45,6 +50,18 @@ func main() {
 	if err != nil {
 		fmt.Printf("Error: vpnclient.exe not found in %s.\nExiting...\n", vpnClientPath)
 		os.Exit(1)
+	}
+
+	if disconnectBeforeConnect == 1 {
+		// 기존 VPN 연결 끊기
+		cmd := exec.Command(vpnClientPath+`\vpnclient`, "disconnect")
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+
+		err = cmd.Run()
+		if err != nil {
+			fmt.Println("Error disconnecting from VPN:", err)
+		}
 	}
 
 	cmd := exec.Command(vpnClientPath+`\vpnclient`, "connect", "cliauth", profile, "user", username, "pwd", password)
